@@ -127,3 +127,20 @@ pub fn JumpToRegister(instr: u16, reg: *[]u16) void {
         reg[registers.R_PC] = reg[r1];
     }
 }
+
+//LD
+pub fn Load(instr: u16, reg: *[]u16) void {
+    const r0 = (instr >> 9) & 0x7;
+    const pc_offset = signExtended(instr & 0xFF,9);
+    reg[r0] = memoryManager.memoryRead(reg[registers.R_PC] + pc_offset);
+    updateFlags(r0, reg);
+}
+
+//LDR
+pub fn LoadRegister(instr: u16, reg: *[]u16) void {
+    const r0 = (instr >> 9) & 0x7;
+    const r1 = (instr >> 6) & 0x7;
+    const offset = signExtended(instr & 0x3F,6);
+    reg[r0] = memoryManager.memoryRead(reg[r1] + offset);
+    updateFlags(r0, reg);
+}
